@@ -1,11 +1,13 @@
+import sys
 import gymnasium as gym
 from gymnasium.wrappers import RecordVideo
 from stable_baselines3 import PPO
 
+name = sys.argv[1]
 env = gym.make("LunarLander-v3", render_mode="rgb_array")
-env = RecordVideo(env, video_folder="videos", name_prefix="baseline",
+env = RecordVideo(env, video_folder="videos", name_prefix=name,
                   episode_trigger=lambda ep: True)
-model = PPO.load("models/baseline", device="cpu")
+model = PPO.load(f"models/{name}", device="cpu")
 
 for _ in range(3):
     obs, _ = env.reset()
