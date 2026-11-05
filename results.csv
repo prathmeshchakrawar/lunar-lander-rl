@@ -1,0 +1,5 @@
+config,n_seeds,score_mean,score_std,avg_length,timeout_pct
+baseline,3,251.1,10.8,364,2
+time_fee,3,261.4,4.0,320,0
+hack,3,36.5,96.9,949,68
+fix,3,256.5,14.0,337,2
