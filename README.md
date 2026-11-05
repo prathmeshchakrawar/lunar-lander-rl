@@ -18,21 +18,33 @@ deliberately broke the reward to reproduce **reward hacking**, and fixed it.
 | Hover bonus (hack) | 36.5 ± 96.9 | 949 | 68% |
 | Progress fix | 256.5 ± 14.0 | 337 | 2% |
 
-Solved = 200+. Scores come from the raw environment so the custom bonus cannot inflate them.
+Solved = 200+. Scores come from the raw environment so the custom bonus cannot
+inflate them. A timeout means the episode hit the 1000-frame limit without landing.
+
+### Hack, per seed
+
+| Seed | Score | Avg episode length | Timeouts (of 20) |
+|---|---|---|---|
+| 0 | 148.2 | 849 | 2 |
+| 1 | -24.5 | 998 | 19 |
+| 2 | -14.2 | 1000 | 20 |
 
 ## Findings
-- The hover bonus made the agent stay in the air: average episode length went
-  from 364 to 949 frames, and 68% of episodes ran to the 1000-frame limit.
+- The hover bonus made the agent stall: average episode length went from 364
+  to 949 frames, and 68% of episodes hit the 1000-frame limit without landing.
   The agent optimised my reward, not the task.
-- Scores for the hack varied a lot across seeds (std 96.9). A single seed
-  (148 on seed 0) understated the effect, so one run is not enough.
-- The progress-based reward removed the hover behaviour (score 256.5).
+- The effect depended on the seed. Two of three seeds almost never landed
+  (19/20 and 20/20 episodes hit the 1000-frame limit, scores -24.5 and -14.2).
+  The third landed in 18 of 20 episodes but only after about 849 frames on
+  average, against 364 for the baseline. Same reward, different outcomes,
+  which is why I report all three seeds.
+- The progress-based reward removed the stalling (score 256.5, length 337).
 - Differences between baseline, time fee and fix are within one standard
   deviation with only 3 seeds, so I do not claim any of them is better.
 
 ## Videos
 - `videos/baseline-episode-0.mp4`: lands normally
-- `videos/hack_s1-episode-0.mp4`: hovers (replace with your clearest clip)
+- `videos/stall_hack_s2-episode-0.mp4`: stall behaviour, the rocket drifts down very slowly and never lands within 1000 frames
 - `videos/fix-episode-0.mp4`: lands again
 
 ## How to run
@@ -41,9 +53,11 @@ pip install "gymnasium[box2d]" stable-baselines3 moviepy tensorboard
 python train.py --reward none --name baseline      # none | time | hack | fix
 python evaluate_len.py baseline
 python record.py baseline
+bash run_seeds.sh                                  # seeds 1 and 2 for all configs
 python results.py
 ```
 
 ## Files
 - `wrappers.py`: reward wrappers (TimeFee, HoverBonus, ProgressFix)
-- `train.py`, `evaluate_len.py`, `record.py`, `results.py`, `run_seeds.sh`
+- `train.py`, `evaluate_len.py`, `record.py`, `record_stall.py`, `results.py`, `run_seeds.sh`
+- `results.csv`: the table above
