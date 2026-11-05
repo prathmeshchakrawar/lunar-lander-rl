@@ -42,10 +42,34 @@ inflate them. A timeout means the episode hit the 1000-frame limit without landi
 - Differences between baseline, time fee and fix are within one standard
   deviation with only 3 seeds, so I do not claim any of them is better.
 
+## Continuous control with SAC
+
+Trained SAC with continuous actions (500k steps, one seed) on the same environment.
+Evaluated over 20 episodes with the raw reward.
+
+| Model | Score | Avg episode length |
+|---|---|---|
+| PPO, discrete actions (seed 0) | 250.0 | 382 |
+| SAC, continuous actions (seed 0) | 282.5 | 187 |
+
+### Robustness to wind (no retraining, trained without wind)
+
+| Wind power | PPO discrete | SAC continuous |
+|---|---|---|
+| 0 | 250.0 | 282.5 |
+| 5 | 241.6 | 282.6 |
+| 10 | 192.3 | 261.2 |
+| 15 | 145.3 | 255.4 |
+
+Caveat: one seed per model. Both the algorithm (PPO vs SAC) and the action
+space (discrete vs continuous) differ, so I cannot say which one causes the
+gap. Next step is to repeat with more seeds.
+
 ## Videos
 - `videos/baseline-episode-0.mp4`: lands normally
 - `videos/stall_hack_s2-episode-0.mp4`: stall behaviour, the rocket drifts down very slowly and never lands within 1000 frames
 - `videos/fix-episode-0.mp4`: lands again
+- `videos/sac_base-episode-0.mp4`: SAC with continuous throttle
 
 ## How to run
 ```bash
@@ -61,3 +85,4 @@ python results.py
 - `wrappers.py`: reward wrappers (TimeFee, HoverBonus, ProgressFix)
 - `train.py`, `evaluate_len.py`, `record.py`, `record_stall.py`, `results.py`, `run_seeds.sh`
 - `results.csv`: the table above
+- `train_sac.py`, `evaluate_sac.py`, `record_sac.py`, `eval_wind.py`, `check_continuous.py`
