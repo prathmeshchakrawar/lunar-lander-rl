@@ -65,6 +65,20 @@ Caveat: one seed per model. Both the algorithm (PPO vs SAC) and the action
 space (discrete vs continuous) differ, so I cannot say which one causes the
 gap. Next step is to repeat with more seeds.
 
+## Human vs AI
+
+I flew the lander myself with the keyboard (`play.py`) and compared it with the SAC agent.
+
+| Player | Episodes | Mean score ± std across episodes |
+|---|---|---|
+| Me, keyboard (main engine full or off) | 17 | -349.4 ± 211.8 |
+| SAC agent, continuous throttle | 20 | 282.5 ± 20.3 |
+
+Caveats: one human player, and the keyboard gives only full thrust or off, while
+the agent controls throttle continuously, so the comparison is not like for like.
+The agent's score comes from a separate clean evaluation (`evaluate_sac.py`),
+because switching to the AI mid-flight in `play.py` hands it episodes it did not start.
+
 ## Videos
 - `videos/baseline-episode-0.mp4`: lands normally
 - `videos/stall_hack_s2-episode-0.mp4`: stall behaviour, the rocket drifts down very slowly and never lands within 1000 frames
@@ -86,3 +100,4 @@ python results.py
 - `train.py`, `evaluate_len.py`, `record.py`, `record_stall.py`, `results.py`, `run_seeds.sh`
 - `results.csv`: the table above
 - `train_sac.py`, `evaluate_sac.py`, `record_sac.py`, `eval_wind.py`, `check_continuous.py`
+- `play.py`: interactive demo (manual vs AI, SPACE to switch), `summary_play.py`
